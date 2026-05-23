@@ -4,18 +4,49 @@ require_once __DIR__ . '/../../config/Database.php';
 
 class Post extends Database
 {
-    public function getAll()
+    public function getAll($search = "", $page = 1, $limit = 5)
     {
+        $offset = ($page - 1) * $limit;
+
+        $searchText = "%" . $search . "%";
+
         $sql = $this->connection->prepare("
-            SELECT posts.*, categories.name AS category_name
-            FROM posts
-            INNER JOIN categories ON posts.category_id = categories.id
-            ORDER BY posts.id DESC
-        ");
+        SELECT posts.*, categories.name AS category_name
+        FROM posts
+        INNER JOIN categories 
+        ON posts.category_id = categories.id
+        WHERE posts.title LIKE ?
+        ORDER BY posts.id DESC
+        LIMIT ?, ?
+    ");
+
+        $sql->bind_param(
+            "sii",
+            $searchText,
+            $offset,
+            $limit
+        );
 
         $sql->execute();
 
         return $sql->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function countPost($search = "")
+    {
+        $searchText = "%" . $search . "%";
+
+        $sql = $this->connection->prepare("
+        SELECT COUNT(*) AS total
+        FROM posts
+        WHERE title LIKE ?
+    ");
+
+        $sql->bind_param("s", $searchText);
+
+        $sql->execute();
+
+        return $sql->get_result()->fetch_assoc();
     }
 
     public function findById($id)

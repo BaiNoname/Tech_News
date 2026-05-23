@@ -16,6 +16,25 @@ class User extends Database
 
         return $sql->get_result()->fetch_all(MYSQLI_ASSOC);
     }
+    public function create($full_name, $email, $password, $role)
+    {
+        $hashPassword = password_hash($password, PASSWORD_DEFAULT);
+
+        $sql = $this->connection->prepare("
+        INSERT INTO users(full_name, email, password, role)
+        VALUES(?, ?, ?, ?)
+    ");
+
+        $sql->bind_param(
+            "ssss",
+            $full_name,
+            $email,
+            $hashPassword,
+            $role
+        );
+
+        return $sql->execute();
+    }
 
     public function findById($id)
     {
@@ -172,6 +191,51 @@ class User extends Database
         ");
 
         $sql->bind_param("i", $id);
+
+        return $sql->execute();
+    }
+
+    public function update($id, $full_name, $password, $role)
+    {
+        if (!empty($password)) {
+
+            $hashPassword = password_hash(
+                $password,
+                PASSWORD_DEFAULT
+            );
+
+            $sql = $this->connection->prepare("
+            UPDATE users
+            SET full_name = ?,
+                password = ?,
+                role = ?
+            WHERE id = ?
+        ");
+
+            $sql->bind_param(
+                "sssi",
+                $full_name,
+                $hashPassword,
+                $role,
+                $id
+            );
+
+        } else {
+
+            $sql = $this->connection->prepare("
+            UPDATE users
+            SET full_name = ?,
+                role = ?
+            WHERE id = ?
+        ");
+
+            $sql->bind_param(
+                "ssi",
+                $full_name,
+                $role,
+                $id
+            );
+        }
 
         return $sql->execute();
     }
