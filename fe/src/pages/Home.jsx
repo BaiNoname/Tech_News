@@ -29,10 +29,15 @@ export default function Home() {
 
     return (
         <>
-            <section className="hero-section">
-                <div className="container">
-                    <h1 className="hero-title">Tin tức công nghệ mới nhất</h1>
-                    <p className="hero-desc">
+            <section className="hero-section hero-future">
+                <div className="container hero-content">
+                    <span className="hero-badge">TECH NEWS 2026</span>
+
+                    <h1 className="hero-title future-title">
+                        Tin tức công nghệ mới nhất
+                    </h1>
+
+                    <p className="hero-desc future-desc">
                         Cập nhật xu hướng AI, phần mềm, thiết bị và thế giới công nghệ mỗi ngày.
                     </p>
                 </div>
@@ -52,17 +57,21 @@ export default function Home() {
                 <div className="post-grid">
                     {posts.map((post) => (
                         <div className="post-card" key={post.id}>
-                            <img
-                                src={`http://localhost/tech_news/be/${post.thumbnail}`}
-                                alt={post.title}
-                            />
+                            <Link to={`/posts/${post.id}`} className="card-img-link">
+                                <img
+                                    src={`http://localhost/tech_news/be/${post.thumbnail}`}
+                                    alt={post.title}
+                                />
+                            </Link>
 
                             <div className="post-content">
                                 <div className="post-category">
                                     {post.category_name}
                                 </div>
 
-                                <h2 className="post-title">{post.title}</h2>
+                                <h2 className="post-title">
+                                    <Link to={`/posts/${post.id}`}>{post.title}</Link>
+                                </h2>
 
                                 <p className="post-meta">
                                     Lượt xem: {post.views}

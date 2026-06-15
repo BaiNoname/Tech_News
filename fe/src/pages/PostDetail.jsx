@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../api/axiosClient";
 import { useNavigate, useParams } from "react-router-dom";
+import CommentBox from "../components/CommentBox";
 
 export default function PostDetail() {
     const { id } = useParams();
@@ -60,6 +61,7 @@ export default function PostDetail() {
                     ← Quay lại
                 </button>
             </article>
+            <CommentBox postId={id} />
         </main>
     );
 }
