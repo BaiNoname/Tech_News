@@ -50,3 +50,38 @@ function sendOTP($to, $otp)
         return false;
     }
 }
+
+function sendEventConfirmMail($to, $eventTitle, $token)
+{
+    $mail = new PHPMailer(true);
+
+    try {
+        $mail->isSMTP();
+        $mail->Host = SMTP_HOST;
+        $mail->SMTPAuth = true;
+        $mail->Username = SMTP_USERNAME;
+        $mail->Password = SMTP_PASSWORD;
+        $mail->SMTPSecure = 'tls';
+        $mail->Port = SMTP_PORT;
+
+        $mail->setFrom(SMTP_FROM, 'Tech News');
+        $mail->addAddress($to);
+
+        $confirmLink = "http://localhost/tech_news/be/events/confirm?token=" . $token;
+
+        $mail->isHTML(true);
+        $mail->Subject = "Xac nhan tham gia su kien";
+        $mail->Body = "
+            <h2>Xác nhận tham gia sự kiện</h2>
+            <p>Bạn đã đăng ký sự kiện: <b>$eventTitle</b></p>
+            <p>Bấm vào link bên dưới để xác nhận:</p>
+            <a href='$confirmLink'>$confirmLink</a>
+        ";
+
+        $mail->send();
+
+        return true;
+    } catch (Exception $e) {
+        return false;
+    }
+}

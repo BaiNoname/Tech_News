@@ -1,0 +1,52 @@
+.user-dropdown {
+    position: relative;
+}
+
+.user-btn {
+    border: none;
+    background: #e0f2fe;
+    color: #0369a1;
+    padding: 10px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.dropdown-menu {
+    position: absolute;
+    right: 0;
+    top: 45px;
+    min-width: 180px;
+    background: white;
+    border: 1px solid #dbeafe;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(2, 132, 199, 0.15);
+    overflow: hidden;
+    z-index: 200;
+}
+
+.dropdown-menu a,
+.dropdown-menu button {
+    display: block;
+    width: 100%;
+    padding: 12px 15px;
+    color: #334155;
+    background: white;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+}
+
+.dropdown-menu a:hover,
+.dropdown-menu button:hover {
+    background: #e0f2fe;
+    color: #0284c7;
+}
+
+.hero-future {
+    position: relative;
+    overflow: hidden;
+    background: radial-gradient(circle at top left, #7dd3fc, transparent 30%),
+                linear-gradient(135deg, #eff6ff, #ffffff, #e0f2fe);
+}
+
+/* giữ nguyên toàn bộ keyframes và animation của bạn ở đây */

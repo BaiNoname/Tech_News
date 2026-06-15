@@ -23,6 +23,8 @@ export default function Header() {
 
                 <nav className="nav">
                     <Link to="/">Trang chủ</Link>
+                    <Link to="/events">Sự kiện</Link>
+
 
                     {user ? (
                         <>

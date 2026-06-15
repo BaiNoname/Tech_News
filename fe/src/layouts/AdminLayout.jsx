@@ -36,8 +36,8 @@ export default function AdminLayout() {
                     Quản lý danh mục
                 </Link>
 
-                <Link to="/">
-                    Về trang user
+                <Link to="/admin/events">
+                    Quản lý sự kiện
                 </Link>
 
                 <button onClick={handleLogout}>

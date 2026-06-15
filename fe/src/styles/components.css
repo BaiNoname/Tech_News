@@ -1,0 +1,365 @@
+.btn {
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    background: #0284c7;
+    color: white;
+}
+
+.btn:hover {
+    background: #0369a1;
+}
+
+.btn-danger {
+    background: #ef4444;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+}
+
+.btn-success {
+    background: #22c55e;
+}
+
+.btn-success:hover {
+    background: #16a34a;
+}
+
+.btn-warning {
+    background: #f59e0b;
+}
+
+.btn-warning:hover {
+    background: #d97706;
+}
+
+.btn-small {
+    padding: 7px 10px;
+    font-size: 13px;
+    margin-right: 8px;
+}
+
+.post-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.post-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(2, 132, 199, 0.12);
+    transition: 0.2s;
+}
+
+.post-card:hover {
+    transform: translateY(-4px);
+}
+
+.post-card img {
+    width: 100%;
+    height: 190px;
+    object-fit: cover;
+}
+
+.post-content {
+    padding: 18px;
+}
+
+.post-category {
+    color: #0284c7;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.post-title {
+    font-size: 20px;
+    margin: 10px 0;
+}
+
+.post-meta {
+    font-size: 14px;
+    color: #64748b;
+}
+
+.pagination {
+    margin: 30px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+}
+
+.pagination button:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+}
+
+.status-active {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #dcfce7;
+    color: #15803d;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.status-inactive {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #fee2e2;
+    color: #b91c1c;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.notification-bar {
+    background: #e0f2fe;
+    color: #0369a1;
+    overflow: hidden;
+    border-bottom: 1px solid #bae6fd;
+    padding: 10px 0;
+}
+
+.notification-track {
+    white-space: nowrap;
+    display: inline-block;
+    animation: notificationMove 25s linear infinite;
+}
+
+.notification-item {
+    margin-right: 50px;
+    font-weight: 600;
+}
+
+@keyframes notificationMove {
+    from {
+        transform: translateX(100%);
+    }
+
+    to {
+        transform: translateX(-100%);
+    }
+}
+
+
+.comment-section {
+    background: white;
+    margin: 30px auto;
+    padding: 25px;
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(2, 132, 199, 0.12);
+}
+
+.rating-summary {
+    margin-bottom: 20px;
+}
+
+.rating-summary h2 {
+    color: #0284c7;
+    margin-bottom: 8px;
+}
+
+.comment-form textarea,
+.comment-form select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #bae6fd;
+    border-radius: 8px;
+}
+
+.login-note {
+    color: #64748b;
+    background: #f1f5f9;
+    padding: 12px;
+    border-radius: 8px;
+}
+
+.comment-list {
+    margin-top: 25px;
+}
+
+.comment-item {
+    border-top: 1px solid #e2e8f0;
+    padding: 16px 0;
+}
+
+.comment-head {
+    display: flex;
+    justify-content: space-between;
+    color: #0f172a;
+}
+
+.comment-item p {
+    margin: 8px 0;
+    color: #334155;
+}
+
+.comment-item small {
+    color: #64748b;
+}
+
+
+
+.event-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.event-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(2, 132, 199, 0.12);
+    transition: 0.25s;
+}
+
+.event-card:hover {
+    transform: translateY(-5px);
+}
+
+.event-card img {
+    width: 100%;
+    height: 190px;
+    object-fit: cover;
+}
+
+.event-content {
+    padding: 18px;
+}
+
+.event-content h2 {
+    margin: 12px 0;
+    color: #0f172a;
+}
+
+.event-desc {
+    color: #475569;
+    line-height: 1.6;
+}
+
+.event-meta {
+    color: #64748b;
+    font-size: 14px;
+}
+
+.event-status {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.status-upcoming {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.status-ongoing {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.status-ended {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.status-cancelled {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.event-actions {
+    margin-top: 25px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.event-closed-note {
+    margin-top: 15px;
+    background: #fee2e2;
+    color: #b91c1c;
+    padding: 12px;
+    border-radius: 8px;
+}
+
+
+
+.chat-box {
+    background: white;
+    margin: 30px auto;
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(2, 132, 199, 0.12);
+    overflow: hidden;
+}
+
+.chat-header {
+    padding: 22px;
+    background: #e0f2fe;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-header h1 {
+    margin: 0;
+    color: #0369a1;
+}
+
+.chat-header p {
+    margin: 5px 0 0;
+    color: #475569;
+}
+
+.chat-messages {
+    height: 430px;
+    overflow-y: auto;
+    padding: 20px;
+    background: #f8fbff;
+}
+
+.chat-message {
+    background: white;
+    padding: 12px 14px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.08);
+}
+
+.chat-name {
+    font-weight: bold;
+    color: #0284c7;
+    margin-bottom: 6px;
+}
+
+.chat-content {
+    color: #1e293b;
+    margin-bottom: 6px;
+}
+
+.chat-message small {
+    color: #64748b;
+}
+
+.chat-form {
+    display: flex;
+    gap: 12px;
+    padding: 18px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.chat-form input {
+    flex: 1;
+    padding: 13px;
+    border: 1px solid #bae6fd;
+    border-radius: 10px;
+}
