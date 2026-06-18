@@ -1,11 +1,11 @@
 import axios from "axios";
+import { API_URL } from "../config";
 
 const axiosClient = axios.create({
-    baseURL: "http://localhost/tech_news/be",
+    baseURL: API_URL,
 });
 
 axiosClient.interceptors.request.use((config) => {
-
     const token = localStorage.getItem("token");
 
     if (token) {

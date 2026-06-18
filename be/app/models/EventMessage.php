@@ -21,14 +21,14 @@ class EventMessage extends Database
         return $sql->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
-    public function create($eventId, $userId, $message)
+    public function create($eventId, $userId, $message, $isSystem = 0)
     {
         $sql = $this->connection->prepare("
-            INSERT INTO event_messages(event_id, user_id, message)
-            VALUES(?, ?, ?)
+            INSERT INTO event_messages(event_id, user_id, message, is_system)
+            VALUES(?, ?, ?, ?)
         ");
 
-        $sql->bind_param("iis", $eventId, $userId, $message);
+        $sql->bind_param("iisi", $eventId, $userId, $message, $isSystem);
 
         return $sql->execute();
     }

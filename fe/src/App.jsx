@@ -18,6 +18,7 @@ import CategoryList from "./pages/admin/Category/CategoryList";
 import CategoryCreate from "./pages/admin/Category/CategoryCreate";
 import CategoryEdit from "./pages/admin/Category/CategoryEdit";
 
+import Profile from "./pages/Profile";
 import ChangePassword from "./pages/ChangePassword";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
@@ -35,6 +36,8 @@ import EventListAdmin from "./pages/admin/Event/EventList";
 import EventCreate from "./pages/admin/Event/EventCreate";
 import EventEdit from "./pages/admin/Event/EventEdit";
 import EventRegistrations from "./pages/admin/Event/EventRegistrations";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminProfile from "./pages/admin/AdminProfile";
 
 
 function App() {
@@ -45,6 +48,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/posts/:id" element={<PostDetail />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/change-password" element={<ChangePassword />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
@@ -54,6 +58,8 @@ function App() {
       </Route>
 
       <Route path="/admin" element={<AdminLayout />}>
+        <Route index element={<AdminDashboard />} />
+        <Route path="profile" element={<AdminProfile />} />
         <Route path="posts" element={<PostList />} />
         <Route path="posts/create" element={<PostCreate />} />
         <Route path="posts/edit/:id" element={<PostEdit />} />

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axiosClient from "../../../api/axiosClient";
+import { API_URL } from "../../../config";
 
 export default function PostList() {
     const [posts, setPosts] = useState([]);
@@ -82,7 +83,7 @@ export default function PostList() {
 
                                 <td>
                                     <img
-                                        src={`http://localhost/tech_news/be/${post.thumbnail}`}
+                                        src={`${API_URL}/${post.thumbnail}`}
                                         width="80"
                                         alt={post.title}
                                     />

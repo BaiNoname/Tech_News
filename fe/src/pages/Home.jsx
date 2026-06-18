@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axiosClient from "../api/axiosClient";
+import { API_URL } from "../config";
 
 export default function Home() {
     const [posts, setPosts] = useState([]);
@@ -59,7 +60,7 @@ export default function Home() {
                         <div className="post-card" key={post.id}>
                             <Link to={`/posts/${post.id}`} className="card-img-link">
                                 <img
-                                    src={`http://localhost/tech_news/be/${post.thumbnail}`}
+                                    src={`${API_URL}/${post.thumbnail}`}
                                     alt={post.title}
                                 />
                             </Link>

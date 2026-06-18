@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . "/../config/env.php";
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -67,7 +68,7 @@ function sendEventConfirmMail($to, $eventTitle, $token)
         $mail->setFrom(SMTP_FROM, 'Tech News');
         $mail->addAddress($to);
 
-        $confirmLink = "http://localhost/tech_news/be/events/confirm?token=" . $token;
+        $confirmLink = APP_BASE_URL . "/events/confirm?token=" . $token;
 
         $mail->isHTML(true);
         $mail->Subject = "Xac nhan tham gia su kien";
