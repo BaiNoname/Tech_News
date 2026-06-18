@@ -1,22 +1,40 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axiosClient from "../api/axiosClient";
+import { API_URL } from "../config";
 
 export default function EventDetail() {
     const { id } = useParams();
     const navigate = useNavigate();
 
     const user = JSON.parse(localStorage.getItem("user"));
+    const isAdmin = user && user.role === "admin";
 
     const [event, setEvent] = useState(null);
+    const [myStatus, setMyStatus] = useState({
+        registered: false,
+        status: null,
+        checked_in: false,
+        reward_claimed: false
+    });
 
     useEffect(() => {
         fetchEvent();
+        if (user) fetchMyStatus();
     }, [id]);
 
     const fetchEvent = async () => {
         const response = await axiosClient.get(`/events/${id}`);
         setEvent(response.data.data);
+    };
+
+    const fetchMyStatus = async () => {
+        try {
+            const response = await axiosClient.get(`/events/${id}/my-status`);
+            if (response.data.success) setMyStatus(response.data.data);
+        } catch (e) {
+            console.log(e);
+        }
     };
 
     const handleRegister = async () => {
@@ -26,8 +44,8 @@ export default function EventDetail() {
         }
 
         const response = await axiosClient.post(`/events/${id}/register`);
-
         alert(response.data.message);
+        fetchMyStatus();
     };
 
     const handleEnterChat = () => {
@@ -35,7 +53,6 @@ export default function EventDetail() {
             navigate("/login");
             return;
         }
-
         navigate(`/events/${event.id}/chat`);
     };
 
@@ -49,11 +66,14 @@ export default function EventDetail() {
 
     const isClosed = event.status === "ended" || event.status === "cancelled";
 
+    // Đã xác nhận tham gia (hoặc admin) thì mới được vào group chat
+    const canEnterChat = isAdmin || myStatus.status === "confirmed";
+
     return (
         <main className="container">
             <button
                 type="button"
-                className="btn-back"
+                className="btn btn-secondary"
                 style={{ marginTop: "25px" }}
                 onClick={() => navigate("/events")}
             >
@@ -78,7 +98,7 @@ export default function EventDetail() {
                 {event.thumbnail && (
                     <img
                         className="detail-img"
-                        src={`http://localhost/tech_news/be/${event.thumbnail}`}
+                        src={`${API_URL}/${event.thumbnail}`}
                         alt={event.title}
                     />
                 )}
@@ -94,26 +114,41 @@ export default function EventDetail() {
                 </div>
 
                 <div className="event-actions">
-                    <button
-                        className="btn"
-                        disabled={isClosed}
-                        onClick={handleRegister}
-                    >
-                        Đăng ký tham gia
-                    </button>
+                    {/* Nút đăng ký: chỉ hiện khi chưa đăng ký và sự kiện chưa kết thúc */}
+                    {!myStatus.registered && !isAdmin && (
+                        <button
+                            className="btn"
+                            disabled={isClosed}
+                            onClick={handleRegister}
+                        >
+                            Đăng ký tham gia
+                        </button>
+                    )}
 
-                    <button
-                        className="btn btn-success"
-                        disabled={isClosed}
-                        onClick={handleEnterChat}
-                    >
-                        Vào group chat
-                    </button>
+                    {/* Đã đăng ký nhưng chưa xác nhận email */}
+                    {myStatus.registered && myStatus.status !== "confirmed" && (
+                        <span className="event-pending-note">
+                            ⏳ Bạn đã đăng ký, vui lòng kiểm tra email để xác nhận tham gia.
+                        </span>
+                    )}
+
+                    {/* Nút group chat: chỉ hiện khi đã xác nhận (hoặc admin) */}
+                    {canEnterChat && (
+                        <button
+                            className="btn btn-success"
+                            onClick={handleEnterChat}
+                        >
+                            Vào group chat
+                        </button>
+                    )}
                 </div>
 
                 {isClosed && (
                     <p className="event-closed-note">
-                        Sự kiện đã kết thúc hoặc đã hủy, không thể tương tác.
+                        Sự kiện đã kết thúc. Bạn không thể đăng ký mới
+                        {canEnterChat
+                            ? ", nhưng vẫn vào group chat để xem lại và nhận thưởng (nếu đã check-in)."
+                            : "."}
                     </p>
                 )}
             </article>

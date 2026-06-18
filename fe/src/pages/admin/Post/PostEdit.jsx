@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../../../api/axiosClient";
+import { API_URL } from "../../../config";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function PostEdit() {
@@ -127,7 +128,7 @@ export default function PostEdit() {
                     <br />
                     {oldThumbnail && (
                         <img
-                            src={`http://localhost/tech_news/be/${oldThumbnail}`}
+                            src={`${API_URL}/${oldThumbnail}`}
                             width="180"
                             alt="thumbnail"
                         />

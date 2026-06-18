@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axiosClient from "../api/axiosClient";
+import { API_URL } from "../config";
 
 export default function EventList() {
     const [events, setEvents] = useState([]);
@@ -67,7 +68,7 @@ export default function EventList() {
                         <div className="event-card" key={event.id}>
                             <Link to={`/events/${event.id}`} className="card-img-link">
                                 <img
-                                    src={`http://localhost/tech_news/be/${event.thumbnail}`}
+                                    src={`${API_URL}/${event.thumbnail}`}
                                     alt={event.title}
                                 />
                             </Link>

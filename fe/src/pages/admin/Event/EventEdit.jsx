@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axiosClient from "../../../api/axiosClient";
+import { API_URL } from "../../../config";
+import { EFFECTS } from "../../../constants/effects";
 
 export default function EventEdit() {
     const { id } = useParams();
@@ -14,7 +16,8 @@ export default function EventEdit() {
         description: "",
         start_time: "",
         end_time: "",
-        max_participants: 100
+        max_participants: 100,
+        reward_effect: "neon"
     });
 
     useEffect(() => {
@@ -30,7 +33,8 @@ export default function EventEdit() {
             description: event.description,
             start_time: event.start_time?.replace(" ", "T"),
             end_time: event.end_time?.replace(" ", "T"),
-            max_participants: event.max_participants
+            max_participants: event.max_participants,
+            reward_effect: event.reward_effect || "neon"
         });
 
         setOldThumbnail(event.thumbnail);
@@ -57,6 +61,7 @@ export default function EventEdit() {
         formData.append("start_time", form.start_time);
         formData.append("end_time", form.end_time);
         formData.append("max_participants", form.max_participants);
+        formData.append("reward_effect", form.reward_effect);
         // status do hệ thống tự set theo thời gian, gửi mặc định "upcoming"
         formData.append("status", "upcoming");
 
@@ -114,7 +119,7 @@ export default function EventEdit() {
                     <br />
                     {oldThumbnail && (
                         <img
-                            src={`http://localhost/tech_news/be/${oldThumbnail}`}
+                            src={`${API_URL}/${oldThumbnail}`}
                             width="180"
                             alt="event"
                         />
@@ -155,6 +160,17 @@ export default function EventEdit() {
                         onChange={handleChange}
                     />
                 </div>
+
+                <div className="form-group">
+                    <label>Hiệu ứng phần thưởng (mở khóa cho người nhận thưởng)</label>
+                    <select name="reward_effect" value={form.reward_effect} onChange={handleChange}>
+                        {EFFECTS.filter((ef) => ef.key !== "none").map((ef) => (
+                            <option key={ef.key} value={ef.key}>{ef.name} — {ef.desc}</option>
+                        ))}
+                    </select>
+                </div>
+
+
 
                 <p className="form-note">
                     Trạng thái sự kiện được hệ thống tự cập nhật theo thời gian bắt đầu / kết thúc.

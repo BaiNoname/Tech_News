@@ -66,28 +66,29 @@ class Event extends Database
         return $sql->get_result()->fetch_assoc();
     }
 
-    public function create($title, $description, $thumbnail, $startTime, $endTime, $maxParticipants, $status)
+    public function create($title, $description, $thumbnail, $startTime, $endTime, $maxParticipants, $status, $rewardEffect = "neon")
     {
         $sql = $this->connection->prepare("
-            INSERT INTO events(title, description, thumbnail, start_time, end_time, max_participants, status)
-            VALUES(?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO events(title, description, thumbnail, start_time, end_time, max_participants, status, reward_effect)
+            VALUES(?, ?, ?, ?, ?, ?, ?, ?)
         ");
 
         $sql->bind_param(
-            "sssssis",
+            "sssssiss",
             $title,
             $description,
             $thumbnail,
             $startTime,
             $endTime,
             $maxParticipants,
-            $status
+            $status,
+            $rewardEffect
         );
 
         return $sql->execute();
     }
 
-    public function update($id, $title, $description, $thumbnail, $startTime, $endTime, $maxParticipants, $status)
+    public function update($id, $title, $description, $thumbnail, $startTime, $endTime, $maxParticipants, $status, $rewardEffect = "neon")
     {
         $sql = $this->connection->prepare("
             UPDATE events
@@ -97,12 +98,13 @@ class Event extends Database
                 start_time = ?,
                 end_time = ?,
                 max_participants = ?,
-                status = ?
+                status = ?,
+                reward_effect = ?
             WHERE id = ?
         ");
 
         $sql->bind_param(
-            "sssssisi",
+            "sssssissi",
             $title,
             $description,
             $thumbnail,
@@ -110,6 +112,7 @@ class Event extends Database
             $endTime,
             $maxParticipants,
             $status,
+            $rewardEffect,
             $id
         );
 

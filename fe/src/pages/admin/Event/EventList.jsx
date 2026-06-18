@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axiosClient from "../../../api/axiosClient";
+import { API_URL } from "../../../config";
 
 export default function EventList() {
     const [events, setEvents] = useState([]);
@@ -81,7 +82,7 @@ export default function EventList() {
                                 <td>
                                     {event.thumbnail && (
                                         <img
-                                            src={`http://localhost/tech_news/be/${event.thumbnail}`}
+                                            src={`${API_URL}/${event.thumbnail}`}
                                             width="80"
                                             alt={event.title}
                                         />

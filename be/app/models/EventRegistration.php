@@ -63,6 +63,61 @@ class EventRegistration extends Database
         return $sql->execute();
     }
 
+    // Lấy bản ghi đăng ký của 1 user cho 1 event
+    public function getRegistration($eventId, $userId)
+    {
+        $sql = $this->connection->prepare("
+            SELECT *
+            FROM event_registrations
+            WHERE event_id = ?
+            AND user_id = ?
+        ");
+
+        $sql->bind_param("ii", $eventId, $userId);
+
+        $sql->execute();
+
+        return $sql->get_result()->fetch_assoc();
+    }
+
+    // Check-in: chỉ cho người confirmed và chưa check-in
+    public function checkIn($eventId, $userId)
+    {
+        $sql = $this->connection->prepare("
+            UPDATE event_registrations
+            SET checked_in_at = NOW()
+            WHERE event_id = ?
+            AND user_id = ?
+            AND status = 'confirmed'
+            AND checked_in_at IS NULL
+        ");
+
+        $sql->bind_param("ii", $eventId, $userId);
+
+        $sql->execute();
+
+        return $sql->affected_rows > 0;
+    }
+
+    // Nhận thưởng: chỉ cho người đã check-in và chưa nhận
+    public function claimReward($eventId, $userId)
+    {
+        $sql = $this->connection->prepare("
+            UPDATE event_registrations
+            SET reward_claimed_at = NOW()
+            WHERE event_id = ?
+            AND user_id = ?
+            AND checked_in_at IS NOT NULL
+            AND reward_claimed_at IS NULL
+        ");
+
+        $sql->bind_param("ii", $eventId, $userId);
+
+        $sql->execute();
+
+        return $sql->affected_rows > 0;
+    }
+
     public function isConfirmed($eventId, $userId)
     {
         $sql = $this->connection->prepare("

@@ -91,7 +91,7 @@ class User extends Database
     public function findById($id)
     {
         $sql = $this->connection->prepare("
-            SELECT id, full_name, email, role, status, created_at, deleted_at
+            SELECT id, full_name, email, role, status, avatar, equipped_effect, created_at, deleted_at
             FROM users
             WHERE id = ?
             AND deleted_at IS NULL
@@ -270,6 +270,70 @@ class User extends Database
                 $id
             );
         }
+
+        return $sql->execute();
+    }
+
+    /**
+     * Cập nhật ảnh đại diện.
+     */
+    public function updateAvatar($id, $avatarPath)
+    {
+        $sql = $this->connection->prepare("
+            UPDATE users
+            SET avatar = ?
+            WHERE id = ?
+            AND deleted_at IS NULL
+        ");
+
+        $sql->bind_param("si", $avatarPath, $id);
+
+        return $sql->execute();
+    }
+
+    /**
+     * Danh sách hiệu ứng user đã MỞ KHÓA = reward_effect của các sự kiện
+     * mà user đã nhận thưởng. Luôn kèm 'none'.
+     */
+    public function getUnlockedEffects($id)
+    {
+        $sql = $this->connection->prepare("
+            SELECT DISTINCT events.reward_effect
+            FROM event_registrations
+            INNER JOIN events ON event_registrations.event_id = events.id
+            WHERE event_registrations.user_id = ?
+            AND event_registrations.reward_claimed_at IS NOT NULL
+            AND events.reward_effect IS NOT NULL
+            AND events.reward_effect <> ''
+        ");
+
+        $sql->bind_param("i", $id);
+
+        $sql->execute();
+
+        $rows = $sql->get_result()->fetch_all(MYSQLI_ASSOC);
+
+        $effects = ["none"];
+        foreach ($rows as $row) {
+            $effects[] = $row["reward_effect"];
+        }
+
+        return array_values(array_unique($effects));
+    }
+
+    /**
+     * Gắn hiệu ứng lên avatar.
+     */
+    public function updateEquippedEffect($id, $effect)
+    {
+        $sql = $this->connection->prepare("
+            UPDATE users
+            SET equipped_effect = ?
+            WHERE id = ?
+            AND deleted_at IS NULL
+        ");
+
+        $sql->bind_param("si", $effect, $id);
 
         return $sql->execute();
     }

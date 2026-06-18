@@ -12,7 +12,8 @@ export default function UserLayout() {
         "/register",
         "/forgot-password",
         "/reset-password",
-        "/change-password"
+        "/change-password",
+        "/profile"
     ];
 
     if (

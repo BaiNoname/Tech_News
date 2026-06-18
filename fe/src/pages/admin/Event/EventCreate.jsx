@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosClient from "../../../api/axiosClient";
+import { EFFECTS } from "../../../constants/effects";
 
 export default function EventCreate() {
     const navigate = useNavigate();
@@ -10,7 +11,8 @@ export default function EventCreate() {
         description: "",
         start_time: "",
         end_time: "",
-        max_participants: 100
+        max_participants: 100,
+        reward_effect: "neon"
     });
 
     const [thumbnail, setThumbnail] = useState(null);
@@ -36,6 +38,7 @@ export default function EventCreate() {
         formData.append("start_time", form.start_time);
         formData.append("end_time", form.end_time);
         formData.append("max_participants", form.max_participants);
+        formData.append("reward_effect", form.reward_effect);
         // status do hệ thống tự set theo thời gian, gửi mặc định "upcoming"
         formData.append("status", "upcoming");
 
@@ -119,6 +122,17 @@ export default function EventCreate() {
                         onChange={handleChange}
                     />
                 </div>
+
+                <div className="form-group">
+                    <label>Hiệu ứng phần thưởng (mở khóa cho người nhận thưởng)</label>
+                    <select name="reward_effect" value={form.reward_effect} onChange={handleChange}>
+                        {EFFECTS.filter((ef) => ef.key !== "none").map((ef) => (
+                            <option key={ef.key} value={ef.key}>{ef.name} — {ef.desc}</option>
+                        ))}
+                    </select>
+                </div>
+
+
 
                 <p className="form-note">
                     Trạng thái sự kiện được hệ thống tự cập nhật theo thời gian bắt đầu / kết thúc.

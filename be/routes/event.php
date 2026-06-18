@@ -49,7 +49,8 @@ if ($uri == "events") {
             $_POST["start_time"],
             $_POST["end_time"],
             $_POST["max_participants"],
-            $_POST["status"]
+            $_POST["status"],
+            $_POST["reward_effect"] ?? "neon"
         );
 
         jsonResponse(true, "Thêm sự kiện thành công");
@@ -171,6 +172,115 @@ if (
     ]);
 }
 
+// GET /events/{id}/my-status - trạng thái đăng ký/check-in/thưởng của user hiện tại
+if (
+    isset($urlParts[0])
+    && $urlParts[0] == "events"
+    && isset($urlParts[1])
+    && isset($urlParts[2])
+    && $urlParts[2] == "my-status"
+) {
+    $authUser = checkAuth();
+
+    $eventId = $urlParts[1];
+
+    $registration = $eventRegistrationModel->getRegistration(
+        $eventId,
+        $authUser["id"]
+    );
+
+    jsonResponse(true, "Success", [
+        "registered" => $registration ? true : false,
+        "status" => $registration["status"] ?? null,
+        "checked_in" => ($registration && $registration["checked_in_at"]) ? true : false,
+        "reward_claimed" => ($registration && $registration["reward_claimed_at"]) ? true : false
+    ]);
+}
+
+// POST /events/{id}/checkin - người đã confirmed check-in khi event đang diễn ra
+if (
+    isset($urlParts[0])
+    && $urlParts[0] == "events"
+    && isset($urlParts[1])
+    && isset($urlParts[2])
+    && $urlParts[2] == "checkin"
+) {
+    $authUser = checkAuth();
+
+    $eventId = $urlParts[1];
+
+    $eventModel->syncStatusByTime();
+    $event = $eventModel->findById($eventId);
+
+    if (!$event) {
+        jsonResponse(false, "Sự kiện không tồn tại");
+    }
+
+    if ($event["status"] != "ongoing") {
+        jsonResponse(false, "Chỉ có thể check-in khi sự kiện đang diễn ra");
+    }
+
+    $isConfirmed = $eventRegistrationModel->isConfirmed($eventId, $authUser["id"]);
+
+    if (!$isConfirmed) {
+        jsonResponse(false, "Bạn chưa xác nhận tham gia sự kiện");
+    }
+
+    $ok = $eventRegistrationModel->checkIn($eventId, $authUser["id"]);
+
+    if (!$ok) {
+        jsonResponse(false, "Bạn đã check-in trước đó");
+    }
+
+    // Tự chèn tin nhắn hệ thống vào group chat
+    $eventMessageModel->create(
+        $eventId,
+        $authUser["id"],
+        $authUser["full_name"] . " đã check-in sự kiện",
+        1
+    );
+
+    jsonResponse(true, "Check-in thành công");
+}
+
+// POST /events/{id}/claim-reward - nhận thưởng sau khi event kết thúc (phải đã check-in)
+if (
+    isset($urlParts[0])
+    && $urlParts[0] == "events"
+    && isset($urlParts[1])
+    && isset($urlParts[2])
+    && $urlParts[2] == "claim-reward"
+) {
+    $authUser = checkAuth();
+
+    $eventId = $urlParts[1];
+
+    $eventModel->syncStatusByTime();
+    $event = $eventModel->findById($eventId);
+
+    if (!$event) {
+        jsonResponse(false, "Sự kiện không tồn tại");
+    }
+
+    if ($event["status"] != "ended") {
+        jsonResponse(false, "Chỉ nhận thưởng khi sự kiện đã kết thúc");
+    }
+
+    $registration = $eventRegistrationModel->getRegistration($eventId, $authUser["id"]);
+
+    if (!$registration || !$registration["checked_in_at"]) {
+        jsonResponse(false, "Bạn chưa check-in nên không thể nhận thưởng");
+    }
+
+    $ok = $eventRegistrationModel->claimReward($eventId, $authUser["id"]);
+
+    if (!$ok) {
+        jsonResponse(false, "Bạn đã nhận thưởng trước đó");
+    }
+
+    jsonResponse(true, "Nhận thưởng thành công");
+}
+
 if (
     isset($urlParts[0])
     && $urlParts[0] == "events"
@@ -212,7 +322,8 @@ if (
         $_POST["start_time"],
         $_POST["end_time"],
         $_POST["max_participants"],
-        $_POST["status"]
+        $_POST["status"],
+        $_POST["reward_effect"] ?? "neon"
     );
 
     jsonResponse(true, "Cập nhật sự kiện thành công");

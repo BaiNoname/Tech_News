@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../api/axiosClient";
+import { API_URL } from "../config";
 import { useNavigate, useParams } from "react-router-dom";
 import CommentBox from "../components/CommentBox";
 
@@ -46,7 +47,7 @@ export default function PostDetail() {
 
                 <img
                     className="detail-img"
-                    src={`http://localhost/tech_news/be/${post.thumbnail}`}
+                    src={`${API_URL}/${post.thumbnail}`}
                     alt={post.title}
                 />
 

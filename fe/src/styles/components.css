@@ -129,7 +129,7 @@
 .notification-track {
     white-space: nowrap;
     display: inline-block;
-    animation: notificationMove 25s linear infinite;
+    animation: notificationMove 50s linear infinite;
 }
 
 .notification-item {
