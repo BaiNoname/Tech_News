@@ -2,15 +2,15 @@
 
 class Database
 {
-    // private $host = "localhost";
-    // private $username = "root";
-    // private $password = "";
-    // private $database = "tech_news";
+    private $host = "localhost";
+    private $username = "root";
+    private $password = "";
+    private $database = "tech_news";
 
-    private $host = "sql110.infinityfree.com";
-    private $username = "if0_42198316";
-    private $password = "5eADOBLAcQ0";
-    private $database = "if0_42198316_tech_news";
+    // private $host = "sql110.infinityfree.com";
+    // private $username = "if0_42198316";
+    // private $password = "5eADOBLAcQ0";
+    // private $database = "if0_42198316_tech_news";
 
     public $connection;
 

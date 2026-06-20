@@ -68,7 +68,8 @@ function sendEventConfirmMail($to, $eventTitle, $token)
         $mail->setFrom(SMTP_FROM, 'Tech News');
         $mail->addAddress($to);
 
-        $confirmLink = APP_BASE_URL . "/events/confirm?token=" . $token;
+        // $confirmLink = APP_BASE_URL . "/events/confirm?token=" . $token;
+        $confirmLink = "http://localhost/tech_news/be/events/confirm?token=" . $token;
 
         $mail->isHTML(true);
         $mail->Subject = "Xac nhan tham gia su kien";
