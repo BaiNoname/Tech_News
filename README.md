@@ -7,6 +7,7 @@
 - [Công nghệ sử dụng](#công-nghệ-sử-dụng)
 - [Kiến trúc tổng quan](#kiến-trúc-tổng-quan)
 - [Cấu trúc thư mục](#cấu-trúc-thư-mục)
+- [Sơ đồ cơ sở dữ liệu (ERD)](#sơ-đồ-cơ-sở-dữ-liệu-erd)
 - [Cài đặt và chạy](#cài-đặt-và-chạy)
 - [Cấu hình](#cấu-hình)
 - [Một số luồng nghiệp vụ](#một-số-luồng-nghiệp-vụ)
@@ -90,6 +91,137 @@ project/
     ├── middleware/          # AuthMiddleware (checkAuth, checkAdmin)
     └── assets/uploads/      # Ảnh upload (posts, events, avatars)
 ```
+
+## Sơ đồ cơ sở dữ liệu (ERD)
+
+Cơ sở dữ liệu `tech_news` gồm 8 bảng. Sơ đồ dưới đây thể hiện các thực thể và quan hệ giữa chúng (GitHub tự render khối `mermaid`).
+
+```mermaid
+erDiagram
+    users ||--o{ posts : "không trực tiếp (qua comments)"
+    categories ||--o{ posts : "phân loại"
+    users ||--o{ comments : "viết"
+    posts ||--o{ comments : "có"
+    events ||--o{ event_registrations : "có lượt đăng ký"
+    users ||--o{ event_registrations : "đăng ký"
+    events ||--o{ event_messages : "có tin nhắn"
+    users ||--o{ event_messages : "gửi"
+    users ||--o{ notifications : "nhận"
+    events ||--o{ notifications : "phát sinh"
+
+    users {
+        int id PK
+        varchar full_name
+        varchar email UK
+        varchar password
+        enum role "admin / user"
+        varchar otp_code
+        datetime otp_expired_at
+        enum status "active / inactive"
+        varchar avatar
+        varchar equipped_effect
+        datetime deleted_at "soft delete"
+        datetime created_at
+    }
+
+    categories {
+        int id PK
+        varchar name
+        datetime created_at
+    }
+
+    posts {
+        int id PK
+        int category_id FK
+        varchar title
+        varchar slug
+        varchar thumbnail
+        text content
+        int views
+        datetime created_at
+        datetime updated_at
+    }
+
+    comments {
+        int id PK
+        int post_id FK
+        int user_id FK
+        text content
+        int rating
+        datetime created_at
+    }
+
+    events {
+        int id PK
+        varchar title
+        text description
+        varchar thumbnail
+        datetime start_time
+        datetime end_time
+        int max_participants
+        enum status "upcoming / ongoing / ended"
+        varchar reward_effect
+        datetime created_at
+    }
+
+    event_registrations {
+        int id PK
+        int event_id FK
+        int user_id FK
+        varchar confirm_token
+        enum status "pending / confirmed / cancelled"
+        datetime confirmed_at
+        datetime checked_in_at
+        datetime reward_claimed_at
+        datetime created_at
+    }
+
+    event_messages {
+        int id PK
+        int event_id FK
+        int user_id FK
+        text message
+        tinyint is_system
+        datetime created_at
+    }
+
+    notifications {
+        int id PK
+        int user_id FK
+        int event_id FK
+        varchar message
+        varchar type
+        tinyint is_read
+        datetime created_at
+    }
+```
+
+### Mô tả các bảng
+
+| Bảng | Vai trò |
+|------|---------|
+| `users` | Tài khoản người dùng (admin/user), hỗ trợ OTP, khóa tài khoản (status), avatar, hiệu ứng đang gắn, và xóa mềm (`deleted_at`). |
+| `categories` | Danh mục bài viết. |
+| `posts` | Bài viết, thuộc một danh mục, có lượt xem. |
+| `comments` | Bình luận của người dùng trên bài viết, kèm đánh giá (rating). |
+| `events` | Sự kiện, có thời gian, trạng thái tự cập nhật, và hiệu ứng phần thưởng. |
+| `event_registrations` | Bảng trung gian giữa user và event; lưu trạng thái đăng ký, mốc xác nhận, check-in và nhận thưởng. |
+| `event_messages` | Tin nhắn trong group chat sự kiện; cờ `is_system` đánh dấu thông báo hệ thống. |
+| `notifications` | Thông báo gửi tới người dùng, có thể gắn với một sự kiện. |
+
+### Các quan hệ chính
+
+- **categories → posts** (1–n): một danh mục có nhiều bài viết. (`posts.category_id`)
+- **posts → comments** (1–n) và **users → comments** (1–n): mỗi bình luận thuộc một bài viết và một người dùng. (`ON DELETE CASCADE`)
+- **events ↔ users** qua **event_registrations** (n–n): một người dùng tham gia nhiều sự kiện và ngược lại; ràng buộc `UNIQUE(event_id, user_id)` đảm bảo mỗi người chỉ đăng ký một sự kiện một lần.
+- **events ↔ users** qua **event_messages** (n–n): tin nhắn trong group chat.
+- **users → notifications** và **events → notifications**: thông báo gắn với người dùng và (tùy chọn) một sự kiện; dùng `ON DELETE SET NULL` để giữ lại thông báo khi user/event bị xóa.
+
+### Ghi chú thiết kế
+
+- **Soft delete:** bảng `users` dùng cột `deleted_at` thay vì xóa thật; có index `idx_users_deleted_at` để lọc nhanh.
+- **Khóa duy nhất chống trùng:** `event_registrations` có `UNIQUE(event_id, user_id)`; `comments` có `UNIQUE(user_id, post_id)` (mỗi người một bình luận/đánh giá cho mỗi bài).
+- **Quyền sở hữu hiệu ứng avatar không lưu riêng** mà suy ra từ các `event_registrations` đã `reward_claimed_at`, kết hợp `events.reward_effect`.
 
 ## Cài đặt và chạy
 
